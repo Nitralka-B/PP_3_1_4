@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AdminPage</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        th, td {
+            border: 1px solid;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .button-EditDelete {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        form {
+            margin: 0;
+        }
+
+        .AddForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+
+        .logout-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #30a7cf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>FirstName</th>
+        <th>LastName</th>
+        <th>EditOrDelete</th>
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.getId()}"></td>
+        <td th:text="${user.getFirstName()}"></td>
+        <td th:text="${user.getLastName()}"></td>
+        <td>
+            <div class="button-EditDelete">
+                <form th:action="@{/admin/EditUser}" method="get">
+                    <input type="hidden" name="Id" th:value="${user.getId()}">
+                    <input type="submit" value="Edit">
+                </form>
+                <form th:action="@{/admin/DeleteUser}" method="post">
+                    <input type="hidden" name="Id" th:value="${user.getId()}">
+                    <input type="submit" value="Delete">
+                </form>
+            </div>
+        </td>
+    </tr>
+</table>
+<br>
+<div class="AddForm">
+    <h1>Add User</h1>
+    <form th:action="@{/admin/addUser}" th:method="POST" th:object="${newUser}">
+        <label for="UserName">UserName</label>
+        <input type="text" name="UserName" id="UserName" th:field="*{username}">
+        <label for="FirstName">FirstName</label>
+        <input type="text" name="FirstName" id="FirstName" th:field="*{firstName}">
+        <label for="LastName">LastName</label>
+        <input type="text" name="LastName" id="LastName" th:field="*{lastName}">
+        <label for="Password">Password</label>
+        <input type="text" name="Password" id="Password" th:field="*{password}">
+        <input type="submit" value="Add">
+    </form>
+</div>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit" class="logout-button">Logout</button>
+</form>
+</body>
+</html>
