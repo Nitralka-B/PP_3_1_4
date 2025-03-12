@@ -11,16 +11,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, UserServiceInt {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
+
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -54,10 +62,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    @Transactional
     public void delete(Long id) {
         User user = userRepository.findById(id).orElse(null);
         userRepository.delete(user);
@@ -67,13 +77,23 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public void update(User user) {
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+    @Transactional
+    public void update(User user, String newPassword, List<Long> roles) {
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+        Set<Role> selectedRoles = roleRepository.findAllById(roles).stream().collect(Collectors.toSet());
+        existingUser.setUsername(user.getUsername());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setRoles(selectedRoles);
+
+        if (newPassword != null && !newPassword.isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(newPassword));
         }
-        userRepository.save(user);
+
+        userRepository.save(existingUser);
     }
 
+    @Transactional
     public void AddUser(User user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
 import java.security.Principal;
@@ -13,6 +15,12 @@ import java.util.List;
 @Controller
 public class MainController {
     private UserService userService;
+    private RoleService roleService;
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @Autowired
     public void setUserSrvice(UserService userService) {
@@ -31,6 +39,7 @@ public class MainController {
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
         model.addAttribute("newUser", new User());
+        model.addAttribute("newRole", new Role());
         return "adminPage";
     }
 
@@ -43,13 +52,15 @@ public class MainController {
     @GetMapping(value = "/admin/EditUser")
     public String editUser(@RequestParam("Id") Long id, Model model) {
         User user = userService.findById(id);
+        List<Role> allRoles = roleService.findAll();
+        model.addAttribute("allRoles", allRoles);
         model.addAttribute("user", user);
         return "editUser";
     }
 
     @PostMapping(value = "/admin/EditUser")
-    public String editUser(@ModelAttribute User user) {
-        userService.update(user);
+    public String editUser(@ModelAttribute User user, @RequestParam(required = false) String newPassword, @RequestParam("roles") List<Long> roles) {
+        userService.update(user, newPassword, roles);
         return "redirect:/admin";
     }
 
@@ -58,5 +69,13 @@ public class MainController {
         userService.AddUser(newUser);
         return "redirect:/admin";
     }
+
+    @PostMapping(value = "/admin/addRole")
+    public String addRole(@ModelAttribute Role newRole) {
+        roleService.SaveRole(newRole);
+        return "redirect:/admin";
+    }
+
+
 
 }

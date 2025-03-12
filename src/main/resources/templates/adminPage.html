@@ -51,6 +51,20 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        .AddRoleForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -92,6 +106,15 @@
         <label for="Password">Password</label>
         <input type="text" name="Password" id="Password" th:field="*{password}">
         <input type="submit" value="Add">
+    </form>
+</div>
+
+<div class="AddRoleForm">
+    <h1>Add Role</h1>
+    <form th:action="@{/admin/addRole}" th:method="POST" th:object="${newRole}">
+        <label for="Role">Name</label>
+        <input type="text" name="Role" id="Role" th:field="*{name}">
+        <input type="submit" value="Save">
     </form>
 </div>
 

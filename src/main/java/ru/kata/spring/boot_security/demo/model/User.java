@@ -53,6 +53,14 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, String firstName, String lastName, String password, Set<Role> roles) {
+        this.username = username;
+        FirstName = firstName;
+        LastName = lastName;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public String getUsername() {
         return username;
     }
