@@ -105,16 +105,11 @@
         <input type="text" name="LastName" id="LastName" th:field="*{lastName}">
         <label for="Password">Password</label>
         <input type="text" name="Password" id="Password" th:field="*{password}">
+        <div th:each="role : ${allRoles}">
+            <input name="roles" type="checkbox" id="roles" th:value="${role.getId()}"}>
+            <label th:text="${role.getName()}"></label>
+        </div>
         <input type="submit" value="Add">
-    </form>
-</div>
-
-<div class="AddRoleForm">
-    <h1>Add Role</h1>
-    <form th:action="@{/admin/addRole}" th:method="POST" th:object="${newRole}">
-        <label for="Role">Name</label>
-        <input type="text" name="Role" id="Role" th:field="*{name}">
-        <input type="submit" value="Save">
     </form>
 </div>
 

@@ -37,6 +37,8 @@ public class MainController {
     @GetMapping(value = "/admin")
     public  String adminPage(Model model) {
         List<User> users = userService.findAll();
+        List<Role> roles = roleService.findAll();
+        model.addAttribute("allRoles", roles);
         model.addAttribute("users", users);
         model.addAttribute("newUser", new User());
         model.addAttribute("newRole", new Role());
