@@ -105,7 +105,9 @@
         <input type="text" name="LastName" id="LastName" th:field="*{lastName}">
         <label for="Password">Password</label>
         <input type="text" name="Password" id="Password" th:field="*{password}">
-        <div th:each="role : ${allRoles}">
+        <br>
+        <label for="role">Role:</label>
+        <div name="role" id="role" th:each="role : ${allRoles}">
             <input name="roles" type="checkbox" id="roles" th:value="${role.getId()}"}>
             <label th:text="${role.getName()}"></label>
         </div>

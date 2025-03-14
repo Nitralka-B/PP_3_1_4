@@ -17,34 +17,127 @@
             text-align: center;
         }
 
-        .logout-button {
-            display: block;
-            margin: 20px auto 0;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #30a7cf;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .sidebar {
+            height: calc(100vh - 60px); /* Высота на весь экран минус высота шапки */
+            width: 250px; /* Ширина боковой панели */
+            position: fixed; /* Фиксированное положение */
+            top: 60px; /* Отступ сверху, равный высоте шапки */
+            left: 0;
+            background-color: white; /* Темный фон */
+            padding-top: 10px; /* Отступ сверху */
+            z-index: 1000; /* Убедимся, что панель выше других элементов */
+        }
+        .sidebar a {
+            color: cornflowerblue; /* Белый текст */
+            padding: 10px 15px; /* Отступы для ссылок */
+            text-decoration: none; /* Убираем подчеркивание */
+            display: block; /* Ссылки как блоки */
+        }
+        .sidebar a:hover {
+            background-color: #495057; /* Цвет фона при наведении */
+        }
+
+        .sidebar .btn {
+            width: 100%; /* Кнопки на всю ширину сайдбара */
+            margin-bottom: 5px; /* Отступ между кнопками */
+            background-color: white; /* Белый фон */
+            color: cornflowerblue; /* Синий текст */
+            border: 1px solid cornflowerblue; /* Синяя рамка */
+            text-align: left; /* Текст слева */
+        }
+
+        /* Стили для активной кнопки */
+        .sidebar .btn.active {
+            background-color: cornflowerblue; /* Синий фон */
+            color: white; /* Белый текст */
+        }
+
+        /* Шапка занимает всю ширину */
+        header {
+            width: 100%;
+            height: 60px; /* Фиксированная высота шапки */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999; /* Шапка ниже боковой панели */
+            background-color: #343a40; /* Темный фон, как у боковой панели */
+        }
+
+        /* Отступ для контента, чтобы он не перекрывался шапкой и боковой панелью */
+        .content {
+            margin-left: 250px; /* Отступ слева, равный ширине боковой панели */
+            padding-top: 100px; /* Отступ сверху, чтобы контент не перекрывался шапкой */
         }
     </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </head>
-<body>
-<table>
-    <tr>
-        <th>Id</th>
-        <th>FirstName</th>
-        <th>LastName</th>
-    </tr>
-    <tr>
-        <td th:text="${user.getId()}"></td>
-        <td th:text="${user.getFirstName()}"></td>
-        <td th:text="${user.getLastName()}"></td>
-    </tr>
-</table>
-<form th:action="@{/logout}" method="post">
-    <button type="submit" class="logout-button">Logout</button>
-</form>
+<body style="background-color: whitesmoke">
+<header class="bg-dark text-white py-2">
+    <div class="container-fluid"> <!-- Используем container-fluid для полной ширины -->
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- Левый блок с username и ролями -->
+            <div class="d-flex align-items-center me-auto">
+                <h4 class="mb-0 font-weight-bold" th:text="${user.username} + '&nbsp;'"></h4>
+                <h4 class="mb-0" th:text="'with roles:' + '&nbsp;'"></h4>
+                <div th:each="role : ${user.getRoles()}">
+                    <h4 class="mb-0" th:text="${#strings.substringAfter(role.name, 'ROLE_')} + '&nbsp;'"></h4>
+                </div>
+            </div>
+
+            <!-- Правый блок (если нужно добавить что-то справа) -->
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-link" style="color: slategray">Logout</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="sidebar">
+    <a href="/user" class="btn btn-primary btn-lg" id="userButton" role="button" aria-pressed="true">User</a>
+    <a href="/admin" class="btn btn-primary btn-lg" id="adminButton" role="button" aria-pressed="true">Admin</a>
+</div>
+
+<div class="content">
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+        </tr>
+        <tr>
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getFirstName()}"></td>
+            <td th:text="${user.getLastName()}"></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    // Логика для переключения активной кнопки
+    document.querySelectorAll('.sidebar .btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Убираем класс active у всех кнопок
+            document.querySelectorAll('.sidebar .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Добавляем класс active к нажатой кнопке
+            this.classList.add('active');
+        });
+    });
+
+    // Определение текущей страницы и активация соответствующей кнопки
+    const currentPage = window.location.pathname; // Получаем текущий URL
+    const userButton = document.getElementById('userButton');
+    const adminButton = document.getElementById('adminButton');
+
+    if (currentPage === '/user') {
+        userButton.classList.add('active');
+    } else if (currentPage === '/admin') {
+        adminButton.classList.add('active');
+    }
+</script>
 </body>
 </html>
