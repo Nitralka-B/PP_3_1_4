@@ -7,15 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
+import ru.kata.spring.boot_security.demo.services.RoleServiceInt;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.services.UserServiceInt;
 
 import java.security.Principal;
 import java.util.List;
 
 @Controller
 public class MainController {
-    private UserService userService;
-    private RoleService roleService;
+    private UserServiceInt userService;
+    private RoleServiceInt roleService;
 
     @Autowired
     public void setRoleService(RoleService roleService) {
@@ -35,13 +37,15 @@ public class MainController {
     }
 
     @GetMapping(value = "/admin")
-    public  String adminPage(Model model) {
+    public  String adminPage(Principal principal, Model model) {
         List<User> users = userService.findAll();
         List<Role> roles = roleService.findAll();
+        User user = userService.findByUsername(principal.getName());
         model.addAttribute("allRoles", roles);
         model.addAttribute("users", users);
         model.addAttribute("newUser", new User());
         model.addAttribute("newRole", new Role());
+        model.addAttribute("user", user);
         return "adminPage";
     }
 

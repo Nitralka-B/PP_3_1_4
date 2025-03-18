@@ -17,10 +17,12 @@ public class RoleService implements RoleServiceInt {
         this.roleRepository = roleRepository;
     }
 
+    @Override
     public List<Role> findAll() {
         return roleRepository.findAll();
     }
 
+    @Override
     @Transactional
     public void SaveRole(Role role) {
         roleRepository.save(role);
