@@ -27,4 +27,9 @@ public class RoleService implements RoleServiceInt {
     public void SaveRole(Role role) {
         roleRepository.save(role);
     }
+
+    @Override
+    public Role findById(Long id) {
+        return roleRepository.findById(id).orElse(null);
+    }
 }

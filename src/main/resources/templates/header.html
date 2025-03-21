@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Header</title>
 </head>
 <body>
+<header class="bg-dark text-white py-2" th:fragment="header">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- Левый блок с username и ролями -->
+            <div class="d-flex align-items-center me-auto">
+                <h4 class="mb-0 font-weight-bold" th:text="${user.username} + '&nbsp;'"></h4>
+                <h4 class="mb-0" th:text="'with roles:' + '&nbsp;'"></h4>
+                <div th:each="role : ${user.getRoles()}">
+                    <h4 class="mb-0" th:text="${#strings.substringAfter(role.name, 'ROLE_')} + '&nbsp;'"></h4>
+                </div>
+            </div>
 
+            <!-- Правый блок (если нужно добавить что-то справа) -->
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-link" style="color: slategray">Logout</button>
+            </form>
+        </div>
+    </div>
+</header>
 </body>
 </html>

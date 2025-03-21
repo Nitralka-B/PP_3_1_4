@@ -32,10 +32,10 @@
     </style>
 </head>
 <body>
-<div class="EditForm">
+<div class="EditForm" th:fragment="editUser">
     <h1>Editor</h1>
-    <form th:action="@{/admin/EditUser}" th:method="post" th:object="${user}">
 
+    <form th:action="@{/admin/EditUser}" th:method="post" th:object="${user}">
         <input type="hidden" name="Id" th:value="*{id}">
         <label for="UserName">UserName</label>
         <input type="text" id="UserName" th:field="*{username}">

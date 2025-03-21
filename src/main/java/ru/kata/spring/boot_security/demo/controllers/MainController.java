@@ -13,6 +13,8 @@ import ru.kata.spring.boot_security.demo.services.UserServiceInt;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -71,7 +73,9 @@ public class MainController {
     }
 
     @PostMapping(value = "/admin/addUser")
-    public String saveUser(@ModelAttribute User newUser) {
+    public String saveUser(@ModelAttribute User newUser, @RequestParam("roles") List<Long> roleId) {
+        Set<Role> roles = roleId.stream().map(roleService::findById).collect(Collectors.toSet());
+        newUser.setRoles(roles);
         userService.AddUser(newUser);
         return "redirect:/admin";
     }
@@ -81,7 +85,4 @@ public class MainController {
         roleService.SaveRole(newRole);
         return "redirect:/admin";
     }
-
-
-
 }

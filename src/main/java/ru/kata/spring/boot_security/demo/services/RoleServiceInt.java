@@ -7,4 +7,5 @@ import java.util.List;
 public interface RoleServiceInt {
     public List<Role> findAll();
     public void SaveRole(Role role);
+    public Role findById(Long id);
 }

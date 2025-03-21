@@ -1,21 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>User</title>
     <style>
-        table {
-            width: 50%;
-            border-collapse: collapse;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        th, td {
-            border: 1px solid;
-            padding: 8px;
-            text-align: center;
-        }
 
         .sidebar {
             height: calc(100vh - 60px); /* Высота на весь экран минус высота шапки */
@@ -65,7 +53,8 @@
 
         /* Отступ для контента, чтобы он не перекрывался шапкой и боковой панелью */
         .content {
-            margin-left: 250px; /* Отступ слева, равный ширине боковой панели */
+            margin-left: 300px; /* Отступ слева, равный ширине боковой панели */
+            margin-right: 50px;
             padding-top: 100px; /* Отступ сверху, чтобы контент не перекрывался шапкой */
         }
     </style>
@@ -75,46 +64,43 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </head>
 <body style="background-color: whitesmoke">
-<header class="bg-dark text-white py-2">
-    <div class="container-fluid"> <!-- Используем container-fluid для полной ширины -->
-        <div class="d-flex align-items-center justify-content-between">
-            <!-- Левый блок с username и ролями -->
-            <div class="d-flex align-items-center me-auto">
-                <h4 class="mb-0 font-weight-bold" th:text="${user.username} + '&nbsp;'"></h4>
-                <h4 class="mb-0" th:text="'with roles:' + '&nbsp;'"></h4>
-                <div th:each="role : ${user.getRoles()}">
-                    <h4 class="mb-0" th:text="${#strings.substringAfter(role.name, 'ROLE_')} + '&nbsp;'"></h4>
-                </div>
-            </div>
-
-            <!-- Правый блок (если нужно добавить что-то справа) -->
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="btn btn-link" style="color: slategray">Logout</button>
-            </form>
+<div th:replace="~{header :: header}"></div>
+<div th:replace="~{sidebar :: sidebar}"></div>
+<div class="content">
+    <h1>User Information-page</h1>
+    <div class="card">
+        <h5 class="card-header">About user</h5>
+        <div class="card-body">
+            <h5 class="card-title">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">FirstName</th>
+                        <th scope="col">LastName</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row" th:text="${user.getId()}"></th>
+                        <td th:text="${user.getUsername()}"></td>
+                        <td th:text="${user.getFirstName()}"></td>
+                        <td th:text="${user.getLastName()}"></td>
+                        <td>
+                            <div th:each="role : ${user.getRoles()}">
+                                <h4 class="mb-0" th:text="${#strings.substringAfter(role.name, 'ROLE_')} + '&nbsp;'"></h4>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </h5>
         </div>
     </div>
-</header>
 
-<div class="sidebar">
-    <a href="/user" class="btn btn-primary btn-lg" id="userButton" role="button" aria-pressed="true">User</a>
-    <a href="/admin" class="btn btn-primary btn-lg" id="adminButton" role="button" aria-pressed="true">Admin</a>
 </div>
-
-<div class="content">
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>FirstName</th>
-            <th>LastName</th>
-        </tr>
-        <tr>
-            <td th:text="${user.getId()}"></td>
-            <td th:text="${user.getFirstName()}"></td>
-            <td th:text="${user.getLastName()}"></td>
-        </tr>
-    </table>
-</div>
-
 <script>
     // Логика для переключения активной кнопки
     document.querySelectorAll('.sidebar .btn').forEach(button => {
@@ -127,7 +113,6 @@
             this.classList.add('active');
         });
     });
-
     // Определение текущей страницы и активация соответствующей кнопки
     const currentPage = window.location.pathname; // Получаем текущий URL
     const userButton = document.getElementById('userButton');
