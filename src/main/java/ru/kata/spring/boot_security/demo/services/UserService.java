@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService, UserServiceInt {
         this.userRepository = userRepository;
     }
 
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -58,25 +59,30 @@ public class UserService implements UserDetailsService, UserServiceInt {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
 
+    @Override
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
+    @Override
     @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    @Override
     @Transactional
     public void delete(Long id) {
         User user = userRepository.findById(id).orElse(null);
         userRepository.delete(user);
     }
 
+    @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
+    @Override
     @Transactional
     public void update(User user, String newPassword, List<Long> roles) {
         User existingUser = userRepository.findById(user.getId()).orElse(null);
@@ -93,6 +99,7 @@ public class UserService implements UserDetailsService, UserServiceInt {
         userRepository.save(existingUser);
     }
 
+    @Override
     @Transactional
     public void AddUser(User user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
