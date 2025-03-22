@@ -35,7 +35,7 @@
 <div class="EditForm" th:fragment="editUser">
     <h1>Editor</h1>
 
-    <form th:action="@{/admin/EditUser}" th:method="post" th:object="${user}">
+    <form th:method="post" th:object="${user1}">
         <input type="hidden" name="Id" th:value="*{id}">
         <label for="UserName">UserName</label>
         <input type="text" id="UserName" th:field="*{username}">
@@ -46,7 +46,7 @@
         <label for="Password">Password</label>
         <input type="password" id="Password" name="newPassword" placeholder="Leave blank to keep current password">
         <div th:each="role : ${allRoles}">
-        <input name="roles" type="checkbox" id="roles" th:value="${role.getId()}" th:checked="${user.roles.contains(role)}">
+        <input name="roles" type="checkbox" id="roles" th:value="${role.getId()}" th:checked="${userToEdit.roles.contains(role)}">
         <label th:text="${role.getName()}"></label>
         </div>
         <input type="submit" value="Save">

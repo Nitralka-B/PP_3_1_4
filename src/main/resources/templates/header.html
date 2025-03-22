@@ -10,9 +10,9 @@
         <div class="d-flex align-items-center justify-content-between">
             <!-- Левый блок с username и ролями -->
             <div class="d-flex align-items-center me-auto">
-                <h4 class="mb-0 font-weight-bold" th:text="${user.username} + '&nbsp;'"></h4>
+                <h4 class="mb-0 font-weight-bold" th:text="${currentUser.username} + '&nbsp;'"></h4>
                 <h4 class="mb-0" th:text="'with roles:' + '&nbsp;'"></h4>
-                <div th:each="role : ${user.getRoles()}">
+                <div th:each="role : ${currentUser.getRoles()}">
                     <h4 class="mb-0" th:text="${#strings.substringAfter(role.name, 'ROLE_')} + '&nbsp;'"></h4>
                 </div>
             </div>

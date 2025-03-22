@@ -84,12 +84,12 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <th scope="row" th:text="${user.getId()}"></th>
-                        <td th:text="${user.getUsername()}"></td>
-                        <td th:text="${user.getFirstName()}"></td>
-                        <td th:text="${user.getLastName()}"></td>
+                        <th scope="row" th:text="${currentUser.getId()}"></th>
+                        <td th:text="${currentUser.getUsername()}"></td>
+                        <td th:text="${currentUser.getFirstName()}"></td>
+                        <td th:text="${currentUser.getLastName()}"></td>
                         <td>
-                            <div th:each="role : ${user.getRoles()}">
+                            <div th:each="role : ${currentUser.getRoles()}">
                                 <h4 class="mb-0" th:text="${#strings.substringAfter(role.name, 'ROLE_')} + '&nbsp;'"></h4>
                             </div>
                         </td>
