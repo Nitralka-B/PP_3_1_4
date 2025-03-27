@@ -40,9 +40,11 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("login").permitAll()
-                        .requestMatchers("/api/addUser").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
@@ -54,11 +56,6 @@ public class WebSecurityConfig {
                 );
         return http.build();
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {

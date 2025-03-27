@@ -107,4 +107,12 @@ public class UserService implements UserDetailsService, UserServiceInt {
         }
         userRepository.save(user);
     }
+
+    @Transactional
+    public void updateUser(User user) {
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userRepository.save(user);
+    }
 }
