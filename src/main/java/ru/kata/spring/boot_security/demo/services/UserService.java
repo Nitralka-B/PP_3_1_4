@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.dto.UserDto;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
@@ -24,6 +25,12 @@ public class UserService implements UserDetailsService, UserServiceInt {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private RoleServiceInt roleService;
+
+    @Autowired
+    public void setRoleService(RoleServiceInt roleService) {
+        this.roleService = roleService;
+    }
 
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
@@ -108,11 +115,49 @@ public class UserService implements UserDetailsService, UserServiceInt {
         userRepository.save(user);
     }
 
+    @Override
     @Transactional
     public void updateUser(User user) {
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userRepository.save(user);
+    }
+
+    @Transactional
+    public User createUserFromDto(UserDto userDto) {
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        Set<Role> roles = userDto.getRoles().stream()
+                .map(roleService::findById)
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
+
+        return save(user);
+    }
+
+    @Transactional
+    public User updateUserFromDto(UserDto userDto) {
+        User user = findById(userDto.getId());
+
+        user.setUsername(userDto.getUsername());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        Set<Role> roles = userDto.getRoles().stream()
+                .map(roleService::findById)
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
+
+        return save(user);
     }
 }

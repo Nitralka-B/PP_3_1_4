@@ -3,10 +3,13 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.dto.UserDto;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
+import ru.kata.spring.boot_security.demo.services.RoleServiceInt;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.services.UserServiceInt;
 
 import java.util.List;
 import java.util.Map;
@@ -16,10 +19,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class AdminRestController {
-    private UserService userService;
-    private RoleService roleService;
+    private UserServiceInt userService;
+    private RoleServiceInt roleService;
 
-    public AdminRestController(UserService userService, RoleService roleService) {
+
+    public AdminRestController(UserServiceInt userService, RoleServiceInt roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -30,22 +34,10 @@ public class AdminRestController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping(value = "/admin/newUser")
-    public void addNewUser(@RequestBody Map<String, Object> payload) {
-            User user = new User();
-            user.setUsername((String) payload.get("username"));
-            user.setFirstName((String) payload.get("firstName"));
-            user.setLastName((String) payload.get("lastName"));
-            user.setPassword((String) payload.get("password"));
-
-            List<String> roleIdsStr = (List<String>) payload.get("roles");
-            Set<Role> roles = roleIdsStr.stream()
-                    .map(Long::parseLong)
-                    .map(roleService::findById)
-                    .collect(Collectors.toSet());
-
-            user.setRoles(roles);
-            userService.AddUser(user);
+    @PostMapping("/admin/newUser")
+    public ResponseEntity<Void> addNewUser(@RequestBody UserDto userDto) {
+        userService.createUserFromDto(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/admin/roles")
@@ -59,27 +51,8 @@ public class AdminRestController {
     }
 
     @PutMapping("/admin/users")
-    public ResponseEntity<?> updateUser(@RequestBody Map<String, Object> payload) {
-            Long userId = Long.parseLong(payload.get("id").toString());
-            User user = userService.findById(userId);
-
-            user.setUsername((String) payload.get("username"));
-            user.setFirstName((String) payload.get("firstName"));
-            user.setLastName((String) payload.get("lastName"));
-
-            if (payload.get("password") != null) {
-                user.setPassword((String) payload.get("password"));
-            }
-
-            List<Long> roleIds = ((List<String>) payload.get("roles")).stream()
-                    .map(Long::parseLong)
-                    .collect(Collectors.toList());
-            Set<Role> roles = roleIds.stream()
-                    .map(roleService::findById)
-                    .collect(Collectors.toSet());
-            user.setRoles(roles);
-
-            userService.updateUser(user);
-            return ResponseEntity.ok().build();
+    public ResponseEntity<Void> updateUser(@RequestBody UserDto userDto) {
+        userService.updateUserFromDto(userDto);
+        return ResponseEntity.ok().build();
     }
 }

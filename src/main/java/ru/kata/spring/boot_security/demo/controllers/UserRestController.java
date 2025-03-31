@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.services.UserServiceInt;
 
 import java.security.Principal;
 import java.util.List;
@@ -15,10 +16,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class UserRestController {
 
-    private UserService userService;
+    private UserServiceInt userService;
 
-    @Autowired
-    public void setUserService(UserService userService) {
+    public UserRestController(UserServiceInt userService) {
         this.userService = userService;
     }
 
